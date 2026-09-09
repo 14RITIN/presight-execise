@@ -1,0 +1,2 @@
+SELECT COUNT(*) FROM users;
+SELECT * FROM users LIMIT 10;

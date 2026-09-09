@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "db:init": "tsx src/db/init.ts",
+    "db:seed": "tsx src/db/seed.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit"
@@ -15,6 +16,7 @@
     "express": "~5.1.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.6.0",
     "@types/better-sqlite3": "^9.6.0",
     "@types/express": "~5.0.1",
     "@types/node": "~22.10.0",

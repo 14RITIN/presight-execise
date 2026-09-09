@@ -9,11 +9,18 @@
     "client",
     "server"
   ],
-   "scripts": {
+  "scripts": {
     "dev:client": "npm run dev --workspace=client",
-    "dev:server": "npm run dev --workspace=server"
+    "dev:server": "npm run dev --workspace=server",
+    "lint": "eslint client/src server/src",
+    "lint:fix": "eslint client/src server/src --fix"
   },
   "devDependencies": {
-    "lerna": "~8.2.1"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.10.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.6",
+    "lerna": "~8.2.1",
+    "typescript-eslint": "^8.70.0"
   }
 }

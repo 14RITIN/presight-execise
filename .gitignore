@@ -12,6 +12,7 @@ node_modules/
 dist/
 build/
 scripts/
+server/data/*.db
 
 # misc
 .DS_Store

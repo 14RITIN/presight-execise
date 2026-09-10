@@ -17,6 +17,7 @@ const SORT_COLUMNS: Record<SortField, string> = {
 interface FindUsersParams {
   q?: string;
   nationalities?: string[];
+  hobbies?: string[];
   page: number;
   limit: number;
   sort: SortField;
@@ -26,6 +27,7 @@ interface FindUsersParams {
 export const findUsers = ({
   q,
   nationalities = [],
+  hobbies = [],
   page,
   limit,
   sort,
@@ -52,6 +54,23 @@ export const findUsers = ({
     filterParams.push(...nationalities);
   }
 
+  if (hobbies.length > 0) {
+    const placeholders = hobbies.map(() => '?').join(', ');
+
+    conditions.push(`
+      id IN (
+        SELECT uh.user_id
+        FROM user_hobbies uh
+        INNER JOIN hobbies h ON h.id = uh.hobby_id
+        WHERE h.name IN (${placeholders})
+        GROUP BY uh.user_id
+        HAVING COUNT(DISTINCT h.name) = ?
+      )
+    `);
+
+    filterParams.push(...hobbies, hobbies.length);
+  }
+  
   const whereClause =
     conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 

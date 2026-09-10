@@ -5,6 +5,7 @@ export const getUsersService = (query: UserQueryParams) => {
 const result = findUsers({
   q: query.q,
   nationalities: query.nationalities,
+  hobbies: query.hobbies,
   page: query.page,
   limit: query.limit,
   sort: query.sort,

@@ -1,9 +1,22 @@
 import { z } from 'zod';
 
+const commaSeparatedArray = z
+  .string()
+  .optional()
+  .transform((value) =>
+    value
+      ? value
+          .split(',')
+          .map((item) => item.trim())
+          .filter(Boolean)
+      : [],
+  );
+
 export const userQuerySchema = z.object({
   q: z.string().trim().optional(),
-  nationalities: z.string().optional(),
-  hobbies: z.string().optional(),
+
+  nationalities: commaSeparatedArray,
+  hobbies: commaSeparatedArray,
 
   sort: z
     .enum(['first_name', 'last_name', 'age', 'nationality'])
@@ -15,3 +28,5 @@ export const userQuerySchema = z.object({
 
   limit: z.coerce.number().int().min(1).max(100).default(30),
 });
+
+export type ParsedUserQuery = z.infer<typeof userQuerySchema>;

@@ -1,16 +1,17 @@
-import express, { type Express, type Request, type Response } from "express";
+import express from 'express';
 
-/**
- * Builds and configures the Express application.
- * Kept separate from src/index.ts so it can be imported directly in tests
- * (e.g. with supertest) without binding to a real port.
- */
-export function createApp(): Express {
+import userRoutes from './modules/users/user.routes';
+
+export function createApp() {
   const app = express();
 
-  app.get("/api/health", (_req: Request, res: Response) => {
-    res.json({ status: "ok" });
+  app.use(express.json());
+
+  app.get('/api/health', (_req, res) => {
+    res.json({ status: 'ok' });
   });
+
+  app.use('/api/users', userRoutes);
 
   return app;
 }

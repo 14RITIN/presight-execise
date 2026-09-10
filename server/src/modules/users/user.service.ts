@@ -4,6 +4,7 @@ import { UserQueryParams } from './user.types';
 export const getUsersService = (query: UserQueryParams) => {
 const result = findUsers({
   q: query.q,
+  nationalities: query.nationalities,
   page: query.page,
   limit: query.limit,
   sort: query.sort,

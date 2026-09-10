@@ -16,6 +16,7 @@ const SORT_COLUMNS: Record<SortField, string> = {
 
 interface FindUsersParams {
   q?: string;
+  nationalities?: string[];
   page: number;
   limit: number;
   sort: SortField;
@@ -24,6 +25,7 @@ interface FindUsersParams {
 
 export const findUsers = ({
   q,
+  nationalities = [],
   page,
   limit,
   sort,
@@ -34,16 +36,27 @@ export const findUsers = ({
   const sortColumn = SORT_COLUMNS[sort];
   const sortDirection = direction === 'desc' ? 'DESC' : 'ASC';
 
-  const whereClause = q
-    ? 'WHERE first_name LIKE ? OR last_name LIKE ?'
-    : '';
+  const conditions: string[] = [];
+  const filterParams: unknown[] = [];
 
-  const searchValue = `%${q}%`;
-  const filterParams = q ? [searchValue, searchValue] : [];
+  if (q) {
+    conditions.push('(first_name LIKE ? OR last_name LIKE ?)');
+    const searchValue = `%${q}%`;
+    filterParams.push(searchValue, searchValue);
+  }
+
+  if (nationalities.length > 0) {
+    const placeholders = nationalities.map(() => '?').join(', ');
+
+    conditions.push(`nationality IN (${placeholders})`);
+    filterParams.push(...nationalities);
+  }
+
+  const whereClause =
+    conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
   const users = db
-    .prepare(
-      `
+    .prepare(`
       SELECT
         id,
         avatar,
@@ -55,18 +68,15 @@ export const findUsers = ({
       ${whereClause}
       ORDER BY ${sortColumn} ${sortDirection}, id ASC
       LIMIT ? OFFSET ?
-      `,
-    )
+    `)
     .all(...filterParams, limit, offset) as User[];
 
   const totalResult = db
-    .prepare(
-      `
+    .prepare(`
       SELECT COUNT(*) AS total
       FROM users
       ${whereClause}
-      `,
-    )
+    `)
     .get(...filterParams) as { total: number };
 
   return {

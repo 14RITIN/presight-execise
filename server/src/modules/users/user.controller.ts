@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 
+import { getUsersService } from './user.service';
 import { userQuerySchema } from './user.schema';
 
 export const getUsers = (req: Request, res: Response): void => {
@@ -17,7 +18,7 @@ export const getUsers = (req: Request, res: Response): void => {
     return;
   }
 
-  res.status(200).json({
-    query: result.data,
-  });
+  const response = getUsersService(result.data);
+
+  res.status(200).json(response);
 };

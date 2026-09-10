@@ -11,3 +11,17 @@ export interface UserQueryParams {
   page: number;
   limit: number;
 }
+
+export interface User {
+  id: number;
+  avatar: string;
+  first_name: string;
+  last_name: string;
+  age: number;
+  nationality: string;
+}
+
+export interface PaginatedUsers {
+  users: User[];
+  total: number;
+}

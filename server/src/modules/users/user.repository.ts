@@ -90,6 +90,7 @@ export const findUsers = ({
     `)
     .all(...filterParams, limit, offset) as User[];
 
+
   const totalResult = db
     .prepare(`
       SELECT COUNT(*) AS total
@@ -98,8 +99,43 @@ export const findUsers = ({
     `)
     .get(...filterParams) as { total: number };
 
+    if (users.length === 0) {
+    return {
+      users: [],
+      total: totalResult.total,
+    };
+  }
+  const userIds = users.map((user) => user.id);
+  const placeholders = userIds.map(() => '?').join(', ');
+
+  const hobbyRows = db
+    .prepare(`
+      SELECT
+        uh.user_id,
+        h.name
+      FROM user_hobbies uh
+      INNER JOIN hobbies h ON h.id = uh.hobby_id
+      WHERE uh.user_id IN (${placeholders})
+      ORDER BY h.name ASC
+    `)
+    .all(...userIds) as { user_id: number; name: string }[];
+
+  const hobbiesByUser = new Map<number, string[]>();
+
+  for (const row of hobbyRows) {
+    const hobbies = hobbiesByUser.get(row.user_id) ?? [];
+    hobbies.push(row.name);
+    hobbiesByUser.set(row.user_id, hobbies);
+  }
+
+  const usersWithHobbies: User[] = users.map((user) => ({
+    ...user,
+    hobbies: hobbiesByUser.get(user.id) ?? [],
+  }));
+
   return {
-    users,
+    users: usersWithHobbies,
     total: totalResult.total,
   };
 };
+

@@ -1,3 +1,4 @@
+import { UserFilters } from "./components/UserFilters";
 import { UserGrid } from "./components/UserGrid";
 import { UserSearch } from "./components/UserSearch";
 import { UserSort } from "./components/UserSort";
@@ -35,15 +36,23 @@ export function UsersPage() {
           </div>
         </div>
 
-        {isLoading ? (
-          <p>Loading users...</p>
-        ) : isError ? (
-          <p>Unable to load users.</p>
-        ) : users.length > 0 ? (
-          <UserGrid users={users} />
-        ) : (
-          <p>No users found.</p>
-        )}
+        <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
+          <div className="hidden lg:block">
+            <UserFilters />
+          </div>
+
+          <div>
+            {isLoading ? (
+              <p>Loading users...</p>
+            ) : isError ? (
+              <p>Unable to load users.</p>
+            ) : users.length > 0 ? (
+              <UserGrid users={users} />
+            ) : (
+              <p>No users found.</p>
+            )}
+          </div>
+        </div>
       </div>
     </main>
   );

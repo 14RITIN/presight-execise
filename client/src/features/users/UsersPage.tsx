@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { UserFilters } from "./components/UserFilters";
 import { UserGrid } from "./components/UserGrid";
 import { UserSearch } from "./components/UserSearch";
@@ -12,13 +12,52 @@ import { UserFiltersSkeleton } from "./components/UserFiltersSkeleton";
 export function UsersPage() {
   const { filters, updateFilters } = useUserFilters();
   const [showFilters, setShowFilters] = useState(false);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-  const { data, isLoading, isError, error, refetch } = useUsers(filters);
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetchNextPageError,
+  } = useUsers(filters);
 
   const facets = data?.pages[0]?.facets;
   const hobbies = facets?.hobbies ?? [];
   const nationalities = facets?.nationalities ?? [];
   const users = data?.pages.flatMap((page) => page.data) ?? [];
+
+  const hasData = users.length > 0;
+  const isInitialError = isError && !hasData;
+
+  useEffect(() => {
+    const element = loadMoreRef.current;
+
+    if (!element) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        rootMargin: "300px",
+      },
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
     <main className="min-h-screen bg-gray-50 p-4 md:p-6">
@@ -56,27 +95,26 @@ export function UsersPage() {
           Filters
         </button>
         <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
-         <div className={`${showFilters ? 'block' : 'hidden'} lg:block`}>
-  {isLoading ? (
-    <UserFiltersSkeleton />
-  ) : (
-    <UserFilters
-      hobbies={hobbies}
-      nationalities={nationalities}
-      selectedHobbies={filters.hobbies ?? []}
-      selectedNationalities={filters.nationalities ?? []}
-      onHobbyChange={(hobbies) => updateFilters({ hobbies })}
-      onNationalityChange={(nationalities) =>
-        updateFilters({ nationalities })
-      }
-    />
-  )}
-</div>
-
+          <div className={`${showFilters ? "block" : "hidden"} lg:block`}>
+            {isLoading ? (
+              <UserFiltersSkeleton />
+            ) : (
+              <UserFilters
+                hobbies={hobbies}
+                nationalities={nationalities}
+                selectedHobbies={filters.hobbies ?? []}
+                selectedNationalities={filters.nationalities ?? []}
+                onHobbyChange={(hobbies) => updateFilters({ hobbies })}
+                onNationalityChange={(nationalities) =>
+                  updateFilters({ nationalities })
+                }
+              />
+            )}
+          </div>
           <section>
             {isLoading ? (
-                <UserGridSkeleton />
-            ) : isError ? (
+              <UserGridSkeleton />
+            ) : isInitialError ? (
               <div className="flex flex-col items-center justify-center py-16">
                 <CircleAlert className="mb-4 h-14 w-14 text-red-400" />
 
@@ -105,7 +143,33 @@ export function UsersPage() {
                 </p>
               </div>
             ) : (
-              <UserGrid users={users} />
+              <>
+                <UserGrid users={users} />
+
+                <div ref={loadMoreRef} className="h-1" />
+
+                {isFetchingNextPage && (
+                  <div className="mt-4">
+                    <UserGridSkeleton />
+                  </div>
+                )}
+
+                {isFetchNextPageError && (
+                  <div className="py-6 text-center">
+                    <p className="text-sm text-gray-500">
+                      Unable to load more users.
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={() => fetchNextPage()}
+                      className="mt-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </section>
         </div>

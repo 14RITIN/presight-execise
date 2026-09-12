@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { UserFilters } from "./components/UserFilters";
 import { UserGrid } from "./components/UserGrid";
 import { UserSearch } from "./components/UserSearch";
@@ -7,12 +8,13 @@ import { useUsers } from "./hooks/useUsers";
 
 export function UsersPage() {
   const { filters, updateFilters } = useUserFilters();
+  const [showFilters, setShowFilters] = useState(false);
 
   const { data, isLoading, isError } = useUsers(filters);
-const facets = data?.pages[0]?.facets;
+  const facets = data?.pages[0]?.facets;
 
-const hobbies = facets?.hobbies ?? [];
-const nationalities = facets?.nationalities ?? [];
+  const hobbies = facets?.hobbies ?? [];
+  const nationalities = facets?.nationalities ?? [];
   const users = data?.pages.flatMap((page) => page.data) ?? [];
 
   return (
@@ -38,21 +40,30 @@ const nationalities = facets?.nationalities ?? [];
             />
           </div>
         </div>
-
+        <button
+          type="button"
+          onClick={() => setShowFilters((value) => !value)}
+          className="lg:hidden my-4 cursor-pointer"
+        >
+          {showFilters ? (
+            <span className="text-xl font-bold m-2"> ✕ </span>
+          ) : (
+            <span className="text-3xl font-bold m-2">☰</span>
+          )}
+          Filters
+        </button>
         <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
-          <div className="hidden lg:block">
-          <UserFilters
-      hobbies={hobbies}
-      nationalities={nationalities}
-      selectedHobbies={filters.hobbies ?? []}
-      selectedNationalities={filters.nationalities ?? []}
-      onHobbyChange={(hobbies) =>
-        updateFilters({ hobbies })
-      }
-      onNationalityChange={(nationalities) =>
-        updateFilters({ nationalities })
-      }
-    />
+          <div className={`${showFilters ? "block" : "hidden"} lg:block`}>
+            <UserFilters
+              hobbies={hobbies}
+              nationalities={nationalities}
+              selectedHobbies={filters.hobbies ?? []}
+              selectedNationalities={filters.nationalities ?? []}
+              onHobbyChange={(hobbies) => updateFilters({ hobbies })}
+              onNationalityChange={(nationalities) =>
+                updateFilters({ nationalities })
+              }
+            />
           </div>
 
           <div>

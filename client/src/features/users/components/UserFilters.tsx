@@ -1,4 +1,4 @@
-import { FacetItem } from '../types/user.types';
+import { FacetItem } from "../types/user.types";
 
 interface UserFiltersProps {
   hobbies: FacetItem[];
@@ -33,9 +33,7 @@ export function UserFilters({
   return (
     <aside className="rounded-xl border border-gray-200 bg-white p-4">
       <div>
-        <h2 className="mb-3 font-semibold text-gray-900">
-          Nationality
-        </h2>
+        <h2 className="mb-3 font-semibold text-gray-900">Nationality</h2>
 
         <div className="space-y-2">
           {nationalities.map((item) => (
@@ -54,12 +52,31 @@ export function UserFilters({
                       onNationalityChange,
                     )
                   }
+                  className="h-4 w-4
+                                cursor-pointer
+                                rounded
+                                border-gray-300
+                                text-gray-600
+                               accent-lime-600
+                                focus:ring-2
+                                focus:ring-lime-200
+                            "
                 />
 
-                {item.value}
+                <label
+                  key={item.value}
+                  className="flex cursor-pointer items-center justify-between
+                            rounded-md px-2 py-1.5
+                            text-sm text-gray-700
+                            transition
+                            hover:bg-gray-50
+                        "
+                >
+                  {item.value}
+                </label>
               </span>
 
-              <span className="text-gray-500">
+              <span className="text-xs font-medium text-gray-500">
                 {item.count}
               </span>
             </label>
@@ -68,9 +85,7 @@ export function UserFilters({
       </div>
 
       <div className="mt-6 border-t border-gray-200 pt-5">
-        <h2 className="mb-3 font-semibold text-gray-900">
-          Hobbies
-        </h2>
+        <h2 className="mb-3 font-semibold text-gray-900">Hobbies</h2>
 
         <div className="space-y-2">
           {hobbies.map((item) => (
@@ -83,18 +98,32 @@ export function UserFilters({
                   type="checkbox"
                   checked={selectedHobbies.includes(item.value)}
                   onChange={() =>
-                    toggleValue(
-                      item.value,
-                      selectedHobbies,
-                      onHobbyChange,
-                    )
+                    toggleValue(item.value, selectedHobbies, onHobbyChange)
                   }
+                  className="h-4 w-4
+                                cursor-pointer
+                                rounded
+                                border-gray-300
+                                text-gray-600
+                               accent-lime-600
+                                focus:ring-2
+                                focus:ring-lime-200
+                            "
                 />
-
-                {item.value}
+                <label
+                  key={item.value}
+                  className="flex cursor-pointer items-center justify-between
+                        rounded-md px-2 py-1.5
+                        text-sm text-gray-700
+                        transition
+                        hover:bg-gray-50
+  "
+                >
+                  {item.value}
+                </label>
               </span>
 
-              <span className="text-gray-500">
+              <span className="text-xs font-medium text-gray-500">
                 {item.count}
               </span>
             </label>

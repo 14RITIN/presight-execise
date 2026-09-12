@@ -1,8 +1,19 @@
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+
+import { UsersPage } from './features/users/UsersPage';
+
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-2xl font-semibold">Presight User Directory</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/users" element={<UsersPage />} />
+
+        <Route
+          path="/"
+          element={<Navigate to="/users" replace />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -10,6 +10,9 @@ export function UsersPage() {
 
   const { data, isLoading, isError } = useUsers(filters);
 
+  const facets = data?.pages[0]?.facets;
+
+  const nationalities = facets?.nationalities ?? [];
   const users = data?.pages.flatMap((page) => page.data) ?? [];
 
   return (
@@ -38,7 +41,13 @@ export function UsersPage() {
 
         <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
           <div className="hidden lg:block">
-            <UserFilters />
+            <UserFilters
+              nationalities={nationalities}
+              selectedNationalities={filters.nationalities ?? []}
+              onNationalityChange={(nationalities) =>
+                updateFilters({ nationalities })
+              }
+            />
           </div>
 
           <div>

@@ -6,6 +6,8 @@ import { UserSort } from "./components/UserSort";
 import { useUserFilters } from "./hooks/useUserFilters";
 import { useUsers } from "./hooks/useUsers";
 import { CircleAlert, RefreshCw, UsersRound } from "lucide-react";
+import { UserGridSkeleton } from "./components/UserGridSkeleton";
+import { UserFiltersSkeleton } from "./components/UserFiltersSkeleton";
 
 export function UsersPage() {
   const { filters, updateFilters } = useUserFilters();
@@ -54,24 +56,26 @@ export function UsersPage() {
           Filters
         </button>
         <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
-          <div className={`${showFilters ? "block" : "hidden"} lg:block`}>
-            <UserFilters
-              hobbies={hobbies}
-              nationalities={nationalities}
-              selectedHobbies={filters.hobbies ?? []}
-              selectedNationalities={filters.nationalities ?? []}
-              onHobbyChange={(hobbies) => updateFilters({ hobbies })}
-              onNationalityChange={(nationalities) =>
-                updateFilters({ nationalities })
-              }
-            />
-          </div>
+         <div className={`${showFilters ? 'block' : 'hidden'} lg:block`}>
+  {isLoading ? (
+    <UserFiltersSkeleton />
+  ) : (
+    <UserFilters
+      hobbies={hobbies}
+      nationalities={nationalities}
+      selectedHobbies={filters.hobbies ?? []}
+      selectedNationalities={filters.nationalities ?? []}
+      onHobbyChange={(hobbies) => updateFilters({ hobbies })}
+      onNationalityChange={(nationalities) =>
+        updateFilters({ nationalities })
+      }
+    />
+  )}
+</div>
 
           <section>
             {isLoading ? (
-              <div className="py-10 text-center text-gray-500">
-                Loading users...
-              </div>
+                <UserGridSkeleton />
             ) : isError ? (
               <div className="flex flex-col items-center justify-center py-16">
                 <CircleAlert className="mb-4 h-14 w-14 text-red-400" />

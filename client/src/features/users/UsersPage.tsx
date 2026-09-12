@@ -5,6 +5,7 @@ import { UserSearch } from "./components/UserSearch";
 import { UserSort } from "./components/UserSort";
 import { useUserFilters } from "./hooks/useUserFilters";
 import { useUsers } from "./hooks/useUsers";
+import { CircleAlert, RefreshCw, UsersRound } from "lucide-react";
 
 export function UsersPage() {
   const { filters, updateFilters } = useUserFilters();
@@ -72,8 +73,10 @@ export function UsersPage() {
                 Loading users...
               </div>
             ) : isError ? (
-              <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-                <p className="text-sm text-red-700">
+              <div className="flex flex-col items-center justify-center py-16">
+                <CircleAlert className="mb-4 h-14 w-14 text-red-400" />
+
+                <p className="text-sm text-gray-700">
                   {error instanceof Error
                     ? error.message
                     : "Unable to load users."}
@@ -82,14 +85,20 @@ export function UsersPage() {
                 <button
                   type="button"
                   onClick={() => refetch()}
-                  className="mt-3 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white"
+                  className="mt-4 flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white"
                 >
+                  <RefreshCw className="h-4 w-4" />
                   Retry
                 </button>
               </div>
             ) : users.length === 0 ? (
-              <div className="py-10 text-center text-gray-500">
-                No users found.
+              <div className="flex flex-col items-center justify-center py-16 text-gray-500">
+                <UsersRound className="mb-4 h-14 w-14 text-gray-300" />
+
+                <p className="font-medium text-gray-700">No users found</p>
+                <p className="mt-1 text-sm">
+                  Try adjusting your search or filters.
+                </p>
               </div>
             ) : (
               <UserGrid users={users} />

@@ -2,11 +2,12 @@ import { db } from '../../db/database';
 
 import {
   FacetItem,
+  FindUsersParams,
   PaginatedUsers,
-  SortDirection,
   SortField,
   User,
   UserFacets,
+  UserFilters,
 } from './user.types';
 
 const SORT_COLUMNS: Record<SortField, string> = {
@@ -16,18 +17,6 @@ const SORT_COLUMNS: Record<SortField, string> = {
   nationality: 'nationality',
 };
 
-interface UserFilters {
-  q?: string;
-  nationalities?: string[];
-  hobbies?: string[];
-}
-
-interface FindUsersParams extends UserFilters {
-  page: number;
-  limit: number;
-  sort: SortField;
-  direction: SortDirection;
-}
 
 const buildFilters = ({
   q,

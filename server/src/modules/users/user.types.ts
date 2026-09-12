@@ -35,3 +35,16 @@ export interface UserFacets {
   hobbies: FacetItem[];
   nationalities: FacetItem[];
 }
+
+export interface UserFilters {
+  q?: string;
+  nationalities?: string[];
+  hobbies?: string[];
+}
+
+export interface FindUsersParams extends UserFilters {
+  page: number;
+  limit: number;
+  sort: SortField;
+  direction: SortDirection;
+}

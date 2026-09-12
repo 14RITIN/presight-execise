@@ -10,9 +10,9 @@ export function UsersPage() {
   const { filters, updateFilters } = useUserFilters();
   const [showFilters, setShowFilters] = useState(false);
 
-  const { data, isLoading, isError } = useUsers(filters);
-  const facets = data?.pages[0]?.facets;
+  const { data, isLoading, isError, error, refetch } = useUsers(filters);
 
+  const facets = data?.pages[0]?.facets;
   const hobbies = facets?.hobbies ?? [];
   const nationalities = facets?.nationalities ?? [];
   const users = data?.pages.flatMap((page) => page.data) ?? [];
@@ -66,17 +66,35 @@ export function UsersPage() {
             />
           </div>
 
-          <div>
+          <section>
             {isLoading ? (
-              <p>Loading users...</p>
+              <div className="py-10 text-center text-gray-500">
+                Loading users...
+              </div>
             ) : isError ? (
-              <p>Unable to load users.</p>
-            ) : users.length > 0 ? (
-              <UserGrid users={users} />
+              <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+                <p className="text-sm text-red-700">
+                  {error instanceof Error
+                    ? error.message
+                    : "Unable to load users."}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => refetch()}
+                  className="mt-3 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : users.length === 0 ? (
+              <div className="py-10 text-center text-gray-500">
+                No users found.
+              </div>
             ) : (
-              <p>No users found.</p>
+              <UserGrid users={users} />
             )}
-          </div>
+          </section>
         </div>
       </div>
     </main>

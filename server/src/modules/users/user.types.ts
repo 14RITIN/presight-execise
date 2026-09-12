@@ -25,3 +25,13 @@ export interface PaginatedUsers {
   users: User[];
   total: number;
 }
+
+export interface FacetItem {
+  value: string;
+  count: number;
+}
+
+export interface UserFacets {
+  hobbies: FacetItem[];
+  nationalities: FacetItem[];
+}

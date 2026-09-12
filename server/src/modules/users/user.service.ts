@@ -1,4 +1,4 @@
-import { findUsers } from './user.repository';
+import { findUserFacets, findUsers } from './user.repository';
 import { UserQueryParams } from './user.types';
 
 export const getUsersService = (query: UserQueryParams) => {
@@ -13,7 +13,12 @@ const result = findUsers({
 });
 
   const totalPages = Math.ceil(result.total / query.limit);
-
+  
+  const facets = findUserFacets({
+  q: query.q,
+  nationalities: query.nationalities,
+  hobbies: query.hobbies,
+});
   return {
     data: result.users,
     pagination: {
@@ -23,5 +28,8 @@ const result = findUsers({
       totalPages,
       hasNextPage: query.page < totalPages,
     },
+      facets,
   };
+
+
 };

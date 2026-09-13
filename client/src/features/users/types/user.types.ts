@@ -50,3 +50,8 @@ export interface UsersResponse {
     nationalities: FacetItem[];
   };
 }
+
+export interface UserFilterOptions {
+  hobbies: string[];
+  nationalities: string[];
+}

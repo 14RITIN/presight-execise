@@ -1,7 +1,8 @@
 import {
+  UserFilterOptions,
   UserQueryParams,
   UsersResponse,
-} from '../types/user.types';
+} from "../types/user.types";
 
 export const fetchUsers = async (
   params: UserQueryParams,
@@ -10,44 +11,50 @@ export const fetchUsers = async (
   const searchParams = new URLSearchParams();
 
   if (params.q) {
-    searchParams.set('q', params.q);
+    searchParams.set("q", params.q);
   }
 
   if (params.nationalities?.length) {
-    searchParams.set(
-      'nationalities',
-      params.nationalities.join(','),
-    );
+    searchParams.set("nationalities", params.nationalities.join(","));
   }
 
   if (params.hobbies?.length) {
-    searchParams.set('hobbies', params.hobbies.join(','));
+    searchParams.set("hobbies", params.hobbies.join(","));
   }
 
   if (params.sort) {
-    searchParams.set('sort', params.sort);
+    searchParams.set("sort", params.sort);
   }
 
   if (params.direction) {
-    searchParams.set('direction', params.direction);
+    searchParams.set("direction", params.direction);
   }
 
   if (params.page) {
-    searchParams.set('page', String(params.page));
+    searchParams.set("page", String(params.page));
   }
 
   if (params.limit) {
-    searchParams.set('limit', String(params.limit));
+    searchParams.set("limit", String(params.limit));
   }
 
-  const response = await fetch(
-    `/api/users?${searchParams.toString()}`,
-    { signal },
-  );
+  const response = await fetch(`/api/users?${searchParams.toString()}`, {
+    signal,
+  });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch users');
+    throw new Error("Failed to fetch users");
   }
 
   return response.json() as Promise<UsersResponse>;
+};
+
+export const fetchUserFilterOptions = async (): Promise<UserFilterOptions> => {
+  const response = await fetch("/api/users/filter-options");
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch filter options");
+  }
+
+  return response.json() as Promise<UserFilterOptions>;
 };

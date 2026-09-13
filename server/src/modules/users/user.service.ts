@@ -1,4 +1,4 @@
-import { findUserFacets, findUsers } from './user.repository';
+import { findUserFacets, findUserFilterOptions, findUsers } from './user.repository';
 import { UserQueryParams } from './user.types';
 
 export const getUsersService = (query: UserQueryParams) => {
@@ -32,4 +32,8 @@ const result = findUsers({
   };
 
 
+};
+
+export const getUserFilterOptionsService = () => {
+  return findUserFilterOptions();
 };

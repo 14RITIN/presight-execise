@@ -7,6 +7,7 @@ import {
   SortField,
   User,
   UserFacets,
+  UserFilterOptions,
   UserFilters,
 } from './user.types';
 
@@ -214,5 +215,28 @@ export const findUserFacets = (
   return {
     hobbies,
     nationalities,
+  };
+};
+
+export const findUserFilterOptions = (): UserFilterOptions => {
+  const hobbyRows = db
+    .prepare(`
+      SELECT name
+      FROM hobbies
+      ORDER BY name ASC
+    `)
+    .all() as { name: string }[];
+
+  const nationalityRows = db
+    .prepare(`
+      SELECT DISTINCT nationality
+      FROM users
+      ORDER BY nationality ASC
+    `)
+    .all() as { nationality: string }[];
+
+  return {
+    hobbies: hobbyRows.map((item) => item.name),
+    nationalities: nationalityRows.map((item) => item.nationality),
   };
 };

@@ -1,6 +1,6 @@
-export type SortField = 'first_name' | 'last_name' | 'age' | 'nationality';
+export type SortField = "first_name" | "last_name" | "age" | "nationality";
 
-export type SortDirection = 'asc' | 'desc';
+export type SortDirection = "asc" | "desc";
 
 export interface UserQueryParams {
   q?: string;
@@ -48,4 +48,9 @@ export interface FindUsersParams extends UserFilters {
   limit: number;
   sort: SortField;
   direction: SortDirection;
+}
+
+export interface UserFilterOptions {
+  hobbies: string[];
+  nationalities: string[];
 }

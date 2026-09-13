@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { getUsersService } from './user.service';
+import { getUserFilterOptionsService, getUsersService } from './user.service';
 import { userQuerySchema } from './user.schema';
 
 export const getUsers = (req: Request, res: Response): void => {
@@ -21,4 +21,14 @@ export const getUsers = (req: Request, res: Response): void => {
   const response = getUsersService(result.data);
 
   res.status(200).json(response);
+};
+
+
+export const getUserFilterOptions = (
+  _req: Request,
+  res: Response,
+): void => {
+  const options = getUserFilterOptionsService();
+
+  res.status(200).json(options);
 };

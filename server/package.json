@@ -3,13 +3,12 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",
-  "scripts": {
+   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "db:init": "tsx src/db/init.ts",
-    "db:seed": "tsx src/db/seed.ts",
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc",
     "start": "node dist/index.js",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "db:init": "tsx src/db/init.ts",
+    "db:seed": "tsx src/db/seed.ts"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",

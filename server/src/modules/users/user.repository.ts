@@ -226,7 +226,7 @@ export const findUserFilterOptions = (): UserFilterOptions => {
       ORDER BY name ASC
     `)
     .all() as { name: string }[];
-
+    
   const nationalityRows = db
     .prepare(`
       SELECT DISTINCT nationality

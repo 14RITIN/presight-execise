@@ -9,6 +9,8 @@ import { ArrowUp, CircleAlert, RefreshCw, UsersRound } from "lucide-react";
 import { UserGridSkeleton } from "./components/UserGridSkeleton";
 import { UserFiltersSkeleton } from "./components/UserFiltersSkeleton";
 import { SortDirection, SortField } from "./types/user.types";
+import { useUserFilterOptions } from "./hooks/useUserFilterOptions";
+import { UserFilterSelects } from "./components/UserFilterSelects";
 
 export function UsersPage() {
   const { filters, updateFilters } = useUserFilters();
@@ -34,6 +36,11 @@ export function UsersPage() {
   const hasData = users.length > 0;
   const isInitialError = isError && !hasData;
   const [showScrollTop, setShowScrollTop] = useState(false);
+  
+  const {
+  data: filterOptions,
+  isLoading: isFilterOptionsLoading,
+} = useUserFilterOptions();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,6 +75,22 @@ export function UsersPage() {
               onSortChange={(sort) => updateFilters({ sort })}
               onDirectionChange={(direction) => updateFilters({ direction })}
             />
+            {!isFilterOptionsLoading && filterOptions && (
+  <div className="mb-6">
+    <UserFilterSelects
+      hobbies={filterOptions.hobbies}
+      nationalities={filterOptions.nationalities}
+      selectedHobbies={filters.hobbies ?? []}
+      selectedNationalities={filters.nationalities ?? []}
+      onHobbiesChange={(hobbies) =>
+        updateFilters({ hobbies })
+      }
+      onNationalitiesChange={(nationalities) =>
+        updateFilters({ nationalities })
+      }
+    />
+  </div>
+)}
           </div>
         </div>
         <button

@@ -29,6 +29,5 @@ export const getUserFilterOptions = (
   res: Response,
 ): void => {
   const options = getUserFilterOptionsService();
-
   res.status(200).json(options);
 };

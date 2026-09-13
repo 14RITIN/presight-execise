@@ -32,15 +32,14 @@ export function UsersPage() {
   const hobbies = facets?.hobbies ?? [];
   const nationalities = facets?.nationalities ?? [];
   const users = data?.pages.flatMap((page) => page.data) ?? [];
+  const totalUsers = data?.pages[0]?.pagination.total ?? 0;
 
   const hasData = users.length > 0;
   const isInitialError = isError && !hasData;
   const [showScrollTop, setShowScrollTop] = useState(false);
-  
-  const {
-  data: filterOptions,
-  isLoading: isFilterOptionsLoading,
-} = useUserFilterOptions();
+
+  const { data: filterOptions, isLoading: isFilterOptionsLoading } =
+    useUserFilterOptions();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,6 +59,7 @@ export function UsersPage() {
         <h1 className="mb-6 text-2xl font-semibold text-gray-900">
           User Directory
         </h1>
+
         <div className="mb-6">
           <div className="mb-6 flex flex-col gap-3 md:flex-row">
             <div className="flex-1">
@@ -68,30 +68,39 @@ export function UsersPage() {
                 onChange={(q) => updateFilters({ q })}
               />
             </div>
-
+            {!isFilterOptionsLoading && filterOptions && (
+              <UserFilterSelects
+                hobbies={filterOptions.hobbies}
+                nationalities={filterOptions.nationalities}
+                selectedHobbies={filters.hobbies ?? []}
+                selectedNationalities={filters.nationalities ?? []}
+                onHobbiesChange={(hobbies) => updateFilters({ hobbies })}
+                onNationalitiesChange={(nationalities) =>
+                  updateFilters({ nationalities })
+                }
+              />
+            )}
             <UserSort
               sort={filters.sort ?? SortField.FirstName}
               direction={filters.direction ?? SortDirection.Asc}
               onSortChange={(sort) => updateFilters({ sort })}
               onDirectionChange={(direction) => updateFilters({ direction })}
             />
-            {!isFilterOptionsLoading && filterOptions && (
-  <div className="mb-6">
-    <UserFilterSelects
-      hobbies={filterOptions.hobbies}
-      nationalities={filterOptions.nationalities}
-      selectedHobbies={filters.hobbies ?? []}
-      selectedNationalities={filters.nationalities ?? []}
-      onHobbiesChange={(hobbies) =>
-        updateFilters({ hobbies })
-      }
-      onNationalitiesChange={(nationalities) =>
-        updateFilters({ nationalities })
-      }
-    />
-  </div>
-)}
           </div>
+        </div>
+
+        <div className="sticky top-0 z-20 mb-4 border-b border-gray-200 bg-gray-50/95 py-3 backdrop-blur">
+          <p className="text-sm text-gray-600">
+            Showing{" "}
+            <span className="font-semibold text-gray-900">
+              {users.length.toLocaleString()}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-gray-900">
+              {totalUsers.toLocaleString()}
+            </span>{" "}
+            users
+          </p>
         </div>
         <button
           type="button"
@@ -196,22 +205,22 @@ export function UsersPage() {
           </section>
         </div>
       </div>
- {showScrollTop && (
-  <button
-    type="button"
-    onClick={() =>
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      })
-    }
-    aria-label="Scroll to top"
-    title="Scroll to top"
-    className="fixed bottom-6 right-6 z-50 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-lime-600 text-white shadow-lg transition hover:bg-lime-700"
-  >
-    <ArrowUp className="h-5 w-5" />
-  </button>
-)}
+      {showScrollTop && (
+        <button
+          type="button"
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            })
+          }
+          aria-label="Scroll to top"
+          title="Scroll to top"
+          className="fixed bottom-6 right-6 z-50 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-lime-600 text-white shadow-lg transition hover:bg-lime-700"
+        >
+          <ArrowUp className="h-5 w-5" />
+        </button>
+      )}
     </main>
   );
 }

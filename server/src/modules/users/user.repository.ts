@@ -34,8 +34,7 @@ const buildFilters = ({
     params.push(searchValue, searchValue);
   }
 
-  // Nationalities use OR semantics
-  // Example: Indian OR Emirati
+  // Nationalities
   if (nationalities.length > 0) {
     const placeholders = nationalities.map(() => '?').join(', ');
 
@@ -43,8 +42,7 @@ const buildFilters = ({
     params.push(...nationalities);
   }
 
-  // Hobbies use ALL semantics
-  // Example: Reading AND Cycling
+  // Hobbies
   if (hobbies.length > 0) {
     const placeholders = hobbies.map(() => '?').join(', ');
 
@@ -129,13 +127,6 @@ export const findUsers = ({
 
   /*
    * Fetch hobbies for every user on the current page in one query.
-   * This avoids an N+1 query:
-   *
-   * Bad:
-   *   1 user query + 30 hobby queries
-   *
-   * Current approach:
-   *   1 user query + 1 hobbies query
    */
   const userIds = users.map((user) => user.id);
   const userPlaceholders = userIds.map(() => '?').join(', ');

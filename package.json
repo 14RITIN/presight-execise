@@ -1,6 +1,10 @@
 {
   "name": "presight-execise",
   "version": "1.0.0",
+    "engines": {
+    "node": ">=22 <23",
+    "npm": ">=10"
+  },
   "private": true,
   "repository": "",
   "author": "",

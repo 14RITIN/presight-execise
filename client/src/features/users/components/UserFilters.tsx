@@ -33,7 +33,12 @@ export function UserFilters({
   return (
     <aside className="rounded-xl border border-gray-200 bg-white p-4">
       <div>
-        <h2 className="mb-3 font-semibold text-gray-900">Nationality</h2>
+        <h2 className="mb-3 font-semibold text-gray-900">
+          Nationality{" "}
+          <span className="text-gray-600 text-xs font-light">
+            (Top 20 nationality)
+          </span>
+        </h2>
 
         <div className="space-y-2">
           {nationalities.map((item) => (
@@ -85,7 +90,12 @@ export function UserFilters({
       </div>
 
       <div className="mt-6 border-t border-gray-200 pt-5">
-        <h2 className="mb-3 font-semibold text-gray-900">Hobbies</h2>
+        <h2 className="mb-3 font-semibold text-gray-900">
+          Hobbies{" "}
+          <span className="text-gray-600 text-xs font-light">
+            (Top 20 Hobbies)
+          </span>
+        </h2>
 
         <div className="space-y-2">
           {hobbies.map((item) => (

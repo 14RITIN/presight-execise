@@ -1,11 +1,14 @@
-export type SortField =
-  | 'first_name'
-  | 'last_name'
-  | 'age'
-  | 'nationality';
+export enum SortField {
+  FirstName = 'first_name',
+  LastName = 'last_name',
+  Age = 'age',
+  Nationality = 'nationality',
+}
 
-export type SortDirection = 'asc' | 'desc';
-
+export enum SortDirection {
+  Asc = 'asc',
+  Desc = 'desc',
+}
 export interface User {
   id: number;
   avatar: string;

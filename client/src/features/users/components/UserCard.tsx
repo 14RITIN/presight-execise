@@ -1,4 +1,4 @@
-import { User } from '../types/user.types';
+import { User } from "../types/user.types";
 
 interface UserCardProps {
   user: User;
@@ -6,10 +6,10 @@ interface UserCardProps {
 
 export function UserCard({ user }: UserCardProps) {
   const visibleHobbies = user.hobbies.slice(0, 2);
-  const remainingHobbies = user.hobbies.length - visibleHobbies.length;
+  const remainingHobbies = user.hobbies.slice(2);
 
   return (
-    <article className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+    <article className="rounded-xl border border-gray-200 bg-white h-full p-5 shadow-sm transition hover:shadow-md">
       <div className="flex flex-col items-center text-center">
         <img
           src={user.avatar}
@@ -36,9 +36,12 @@ export function UserCard({ user }: UserCardProps) {
             </span>
           ))}
 
-          {remainingHobbies > 0 && (
-            <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
-              +{remainingHobbies}
+          {remainingHobbies.length > 0 && (
+            <span
+              title={remainingHobbies.join(", ")}
+              className="cursor-pointer rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700"
+            >
+              +{remainingHobbies.length}
             </span>
           )}
         </div>

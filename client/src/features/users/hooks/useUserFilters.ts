@@ -6,8 +6,8 @@ import {
   UserQueryParams,
 } from '../types/user.types';
 
-const DEFAULT_SORT: SortField = 'first_name';
-const DEFAULT_DIRECTION: SortDirection = 'asc';
+const DEFAULT_SORT = SortField.FirstName;
+const DEFAULT_DIRECTION = SortDirection.Asc;
 
 const parseList = (value: string | null): string[] => {
   if (!value) {

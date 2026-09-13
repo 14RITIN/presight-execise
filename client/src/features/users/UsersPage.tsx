@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { UserFilters } from "./components/UserFilters";
 import { UserGrid } from "./components/UserGrid";
 import { UserSearch } from "./components/UserSearch";
@@ -8,6 +8,7 @@ import { useUsers } from "./hooks/useUsers";
 import { CircleAlert, RefreshCw, UsersRound } from "lucide-react";
 import { UserGridSkeleton } from "./components/UserGridSkeleton";
 import { UserFiltersSkeleton } from "./components/UserFiltersSkeleton";
+import { SortDirection, SortField } from "./types/user.types";
 
 export function UsersPage() {
   const { filters, updateFilters } = useUserFilters();
@@ -33,31 +34,6 @@ export function UsersPage() {
   const hasData = users.length > 0;
   const isInitialError = isError && !hasData;
 
-  useEffect(() => {
-    const element = loadMoreRef.current;
-
-    if (!element) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      {
-        rootMargin: "300px",
-      },
-    );
-
-    observer.observe(element);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-
   return (
     <main className="min-h-screen bg-gray-50 p-4 md:p-6">
       <div className="mx-auto max-w-7xl">
@@ -74,8 +50,8 @@ export function UsersPage() {
             </div>
 
             <UserSort
-              sort={filters.sort ?? "first_name"}
-              direction={filters.direction ?? "asc"}
+              sort={filters.sort ?? SortField.FirstName}
+              direction={filters.direction ?? SortDirection.Asc}
               onSortChange={(sort) => updateFilters({ sort })}
               onDirectionChange={(direction) => updateFilters({ direction })}
             />

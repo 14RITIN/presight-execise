@@ -1,14 +1,18 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const commaSeparatedArray = z
   .string()
   .optional()
   .transform((value) =>
     value
-      ? value
-          .split(',')
-          .map((item) => item.trim())
-          .filter(Boolean)
+      ? [
+          ...new Set(
+            value
+              .split(",")
+              .map((item) => item.trim())
+              .filter(Boolean),
+          ),
+        ]
       : [],
   );
 
@@ -19,10 +23,10 @@ export const userQuerySchema = z.object({
   hobbies: commaSeparatedArray,
 
   sort: z
-    .enum(['first_name', 'last_name', 'age', 'nationality'])
-    .default('first_name'),
+    .enum(["first_name", "last_name", "age", "nationality"])
+    .default("first_name"),
 
-  direction: z.enum(['asc', 'desc']).default('asc'),
+  direction: z.enum(["asc", "desc"]).default("asc"),
 
   page: z.coerce.number().int().min(1).default(1),
 

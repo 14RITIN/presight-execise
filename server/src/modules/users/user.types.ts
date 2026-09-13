@@ -19,6 +19,7 @@ export interface User {
   last_name: string;
   age: number;
   nationality: string;
+  hobbies: string[];
 }
 
 export interface PaginatedUsers {

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { User } from "../types/user.types";
 
 interface UserCardProps {
@@ -5,22 +6,36 @@ interface UserCardProps {
 }
 
 export function UserCard({ user }: UserCardProps) {
+  const [avatarError, setAvatarError] = useState(false);
+
   const visibleHobbies = user.hobbies.slice(0, 2);
   const remainingHobbies = user.hobbies.slice(2);
+  const initials =  `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
 
   return (
-    <article className="rounded-xl border border-gray-200 bg-white h-full p-5 shadow-sm transition hover:shadow-md">
+  <article className="h-64 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md">
       <div className="flex flex-col items-center text-center">
-        <img
-          src={user.avatar}
-          alt={`${user.first_name} ${user.last_name}`}
-          className="h-20 w-20 rounded-full object-cover"
-          loading="lazy"
-        />
 
-        <h2 className="mt-3 text-lg font-semibold text-gray-900">
-          {user.first_name} {user.last_name}
-        </h2>
+        {avatarError ? (
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-lg font-semibold text-lime-700">
+            {initials}
+          </div>
+        ) : (
+          <img
+            src={user.avatar}
+            alt={`${user.first_name} ${user.last_name}`}
+            loading="lazy"
+            onError={() => setAvatarError(true)}
+            className="h-20 w-20 rounded-full object-cover"
+          />
+        )}
+
+      <h2
+  title={`${user.first_name} ${user.last_name}`}
+  className="mt-3 w-full truncate text-center text-lg font-semibold text-gray-900"
+>
+  {user.first_name} {user.last_name}
+</h2>
 
         <p className="mt-1 text-sm text-gray-500">
           {user.nationality} · Age {user.age}

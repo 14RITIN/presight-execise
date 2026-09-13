@@ -12,7 +12,6 @@ import { UserFiltersSkeleton } from "./components/UserFiltersSkeleton";
 export function UsersPage() {
   const { filters, updateFilters } = useUserFilters();
   const [showFilters, setShowFilters] = useState(false);
-  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const {
     data,
@@ -144,9 +143,14 @@ export function UsersPage() {
               </div>
             ) : (
               <>
-                <UserGrid users={users} />
-
-                <div ref={loadMoreRef} className="h-1" />
+                <UserGrid
+                  users={users}
+                  hasNextPage={Boolean(hasNextPage)}
+                  isFetchingNextPage={isFetchingNextPage}
+                  onLoadMore={() => {
+                    fetchNextPage();
+                  }}
+                />
 
                 {isFetchingNextPage && (
                   <div className="mt-4">

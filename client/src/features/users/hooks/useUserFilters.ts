@@ -1,10 +1,6 @@
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from "react-router-dom";
 
-import {
-  SortDirection,
-  SortField,
-  UserQueryParams,
-} from '../types/user.types';
+import { SortDirection, SortField, UserQueryParams } from "../types/user.types";
 
 const DEFAULT_SORT = SortField.FirstName;
 const DEFAULT_DIRECTION = SortDirection.Asc;
@@ -15,29 +11,36 @@ const parseList = (value: string | null): string[] => {
   }
 
   return value
-    .split(',')
+    .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
+};
+
+const isSortField = (value: string | null): value is SortField => {
+  return Object.values(SortField).includes(value as SortField);
+};
+
+const isSortDirection = (value: string | null): value is SortDirection => {
+  return Object.values(SortDirection).includes(value as SortDirection);
 };
 
 export const useUserFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const sortValue = searchParams.get("sort");
+  const directionValue = searchParams.get("direction");
+
   const filters: UserQueryParams = {
-    q: searchParams.get('q') ?? '',
-    nationalities: parseList(searchParams.get('nationalities')),
-    hobbies: parseList(searchParams.get('hobbies')),
-    sort:
-      (searchParams.get('sort') as SortField | null) ??
-      DEFAULT_SORT,
-    direction:
-      (searchParams.get('direction') as SortDirection | null) ??
-      DEFAULT_DIRECTION,
+    q: searchParams.get("q") ?? "",
+    nationalities: parseList(searchParams.get("nationalities")),
+    hobbies: parseList(searchParams.get("hobbies")),
+    sort: isSortField(sortValue) ? sortValue : DEFAULT_SORT,
+    direction: isSortDirection(directionValue)
+      ? directionValue
+      : DEFAULT_DIRECTION,
   };
 
-  const updateFilters = (
-    updates: Partial<UserQueryParams>,
-  ) => {
+  const updateFilters = (updates: Partial<UserQueryParams>) => {
     const next = {
       ...filters,
       ...updates,
@@ -46,29 +49,23 @@ export const useUserFilters = () => {
     const params = new URLSearchParams();
 
     if (next.q) {
-      params.set('q', next.q);
+      params.set("q", next.q);
     }
 
     if (next.nationalities?.length) {
-      params.set(
-        'nationalities',
-        next.nationalities.join(','),
-      );
+      params.set("nationalities", next.nationalities.join(","));
     }
 
     if (next.hobbies?.length) {
-      params.set('hobbies', next.hobbies.join(','));
+      params.set("hobbies", next.hobbies.join(","));
     }
 
     if (next.sort && next.sort !== DEFAULT_SORT) {
-      params.set('sort', next.sort);
+      params.set("sort", next.sort);
     }
 
-    if (
-      next.direction &&
-      next.direction !== DEFAULT_DIRECTION
-    ) {
-      params.set('direction', next.direction);
+    if (next.direction && next.direction !== DEFAULT_DIRECTION) {
+      params.set("direction", next.direction);
     }
 
     setSearchParams(params);

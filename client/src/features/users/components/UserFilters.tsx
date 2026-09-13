@@ -1,3 +1,4 @@
+import { RotateCcw } from "lucide-react";
 import { FacetItem } from "../types/user.types";
 
 interface UserFiltersProps {
@@ -7,6 +8,7 @@ interface UserFiltersProps {
   selectedNationalities: string[];
   onHobbyChange: (hobbies: string[]) => void;
   onNationalityChange: (nationalities: string[]) => void;
+  onReset: () => void;
 }
 
 export function UserFilters({
@@ -16,6 +18,7 @@ export function UserFilters({
   selectedNationalities,
   onHobbyChange,
   onNationalityChange,
+  onReset,
 }: UserFiltersProps) {
   const toggleValue = (
     value: string,
@@ -30,14 +33,28 @@ export function UserFilters({
     onChange([...selectedValues, value]);
   };
 
+  const hasSelectedFilters =
+    selectedHobbies.length > 0 || selectedNationalities.length > 0;
+
   return (
     <aside className="rounded-xl border border-gray-200 bg-white p-4">
       <div>
-        <h2 className="mb-3 font-semibold text-gray-900">
+        <h2 className="flex items-center justify-between mb-3 font-semibold text-gray-900">
           Nationality{" "}
           <span className="text-gray-600 text-xs font-light">
             (Top 20 nationality)
           </span>
+          {hasSelectedFilters && (
+            <button
+              type="button"
+              onClick={onReset}
+              aria-label="Reset filters"
+              title="Reset filters"
+              className="cursor-pointer rounded-md p-1.5  text-gray-500 transition hover:bg-gray-100 hover:text-lime-600 "
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+          )}
         </h2>
 
         <div className="space-y-2">
@@ -90,11 +107,22 @@ export function UserFilters({
       </div>
 
       <div className="mt-6 border-t border-gray-200 pt-5">
-        <h2 className="mb-3 font-semibold text-gray-900">
+        <h2 className="flex items-center justify-between mb-3 font-semibold text-gray-900">
           Hobbies{" "}
           <span className="text-gray-600 text-xs font-light">
             (Top 20 Hobbies)
           </span>
+          {hasSelectedFilters && (
+            <button
+              type="button"
+              onClick={onReset}
+              aria-label="Reset filters"
+              title="Reset filters"
+              className="cursor-pointer rounded-md p-1.5  text-gray-500 transition hover:bg-gray-100 hover:text-lime-600 "
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+          )}
         </h2>
 
         <div className="space-y-2">

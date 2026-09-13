@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserFilters } from "./components/UserFilters";
 import { UserGrid } from "./components/UserGrid";
 import { UserSearch } from "./components/UserSearch";
 import { UserSort } from "./components/UserSort";
 import { useUserFilters } from "./hooks/useUserFilters";
 import { useUsers } from "./hooks/useUsers";
-import { CircleAlert, RefreshCw, UsersRound } from "lucide-react";
+import { ArrowUp, CircleAlert, RefreshCw, UsersRound } from "lucide-react";
 import { UserGridSkeleton } from "./components/UserGridSkeleton";
 import { UserFiltersSkeleton } from "./components/UserFiltersSkeleton";
 import { SortDirection, SortField } from "./types/user.types";
@@ -33,6 +33,19 @@ export function UsersPage() {
 
   const hasData = users.length > 0;
   const isInitialError = isError && !hasData;
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <main className="min-h-screen bg-gray-50 p-4 md:p-6">
@@ -82,6 +95,12 @@ export function UsersPage() {
                 onHobbyChange={(hobbies) => updateFilters({ hobbies })}
                 onNationalityChange={(nationalities) =>
                   updateFilters({ nationalities })
+                }
+                onReset={() =>
+                  updateFilters({
+                    hobbies: [],
+                    nationalities: [],
+                  })
                 }
               />
             )}
@@ -154,6 +173,21 @@ export function UsersPage() {
           </section>
         </div>
       </div>
+      {showScrollTop && (
+        <button
+          type="button"
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            })
+          }
+          aria-label="Scroll to top"
+          className="fixed bottom-6 right-6 z-50 flex cursor-pointer flex-col rounded-full items-center gap-1  bg-lime-600 px-3 py-2 text-white shadow-lg transition hover:bg-lime-700"
+        >
+          <ArrowUp className="h-5 w-5" />
+        </button>
+      )}
     </main>
   );
 }

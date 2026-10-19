@@ -18,6 +18,7 @@
     "dev:server": "npm run dev --workspace=server",
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "lint": "eslint client/src server/src",
+    "test": "npm run test:run --workspace=server",
     "lint:fix": "eslint client/src server/src --fix"
   },
   "devDependencies": {

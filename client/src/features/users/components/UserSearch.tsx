@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigationType } from 'react-router-dom';
 
 interface UserSearchProps {
   value: string;
@@ -8,23 +8,27 @@ interface UserSearchProps {
 
 export function UserSearch({ value, onChange }: UserSearchProps) {
   const { key: navigationKey } = useLocation();
+  const navigationType = useNavigationType();
   const [searchValue, setSearchValue] = useState(value);
   const [previousNavigationKey, setPreviousNavigationKey] = useState(navigationKey);
 
-  // Discard pending input on reset or history navigation, even if q is unchanged.
-  // This is only the existing debounce draft; committed filters live in the URL.
+  // Preserve the draft when its trimmed value is committed to the URL.
+  // History navigation and changes to the committed query restore URL state.
   if (previousNavigationKey !== navigationKey) {
     setPreviousNavigationKey(navigationKey);
-    setSearchValue(value);
+    if (navigationType === 'POP' || searchValue.trim() !== value) {
+      setSearchValue(value);
+    }
   }
 
   useEffect(() => {
-    if (searchValue === value) {
+    const query = searchValue.trim();
+    if (query === value.trim()) {
       return;
     }
 
     const timer = window.setTimeout(() => {
-      onChange(searchValue);
+      onChange(query);
     }, 300);
 
     return () => {

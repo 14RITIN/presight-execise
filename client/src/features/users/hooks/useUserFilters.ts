@@ -31,7 +31,7 @@ export const useUserFilters = () => {
   const directionValue = searchParams.get("direction");
 
   const filters: UserQueryParams = {
-    q: searchParams.get("q") ?? "",
+    q: (searchParams.get("q") ?? "").trim(),
     nationalities: parseList(searchParams.get("nationalities")),
     hobbies: parseList(searchParams.get("hobbies")),
     sort: isSortField(sortValue) ? sortValue : DEFAULT_SORT,
@@ -48,8 +48,9 @@ export const useUserFilters = () => {
 
     const params = new URLSearchParams();
 
-    if (next.q) {
-      params.set("q", next.q);
+    const query = next.q?.trim();
+    if (query) {
+      params.set("q", query);
     }
 
     if (next.nationalities?.length) {

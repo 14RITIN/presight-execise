@@ -12,10 +12,6 @@ interface UserFilterSelectsProps {
   onHobbiesChange: (values: string[]) => void;
   onNationalitiesChange: (values: string[]) => void;
 }
-interface SelectOption {
-  label: string;
-  value: string;
-}
 
 const selectStyles: StylesConfig<SelectOption, true> = {
   control: (base, state) => ({
@@ -101,10 +97,9 @@ export function UserFilterSelects({
       <Select
         isMulti
         isSearchable
+        aria-label="Nationalities (match any selected)"
         options={nationalityOptions}
-        value={nationalityOptions.filter((option) =>
-          selectedNationalities.includes(option.value),
-        )}
+        value={selectedNationalities.map((value) => ({ label: value, value }))}
         onChange={(values) => handleChange(values, onNationalitiesChange)}
         placeholder="Select nationalities..."
         closeMenuOnSelect={false}
@@ -114,10 +109,9 @@ export function UserFilterSelects({
       <Select
         isMulti
         isSearchable
+        aria-label="Hobbies (match all selected)"
         options={hobbyOptions}
-        value={hobbyOptions.filter((option) =>
-          selectedHobbies.includes(option.value),
-        )}
+        value={selectedHobbies.map((value) => ({ label: value, value }))}
         onChange={(values) => handleChange(values, onHobbiesChange)}
         placeholder="Select hobbies..."
         closeMenuOnSelect={false}

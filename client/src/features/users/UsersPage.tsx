@@ -5,7 +5,7 @@ import { UserSearch } from "./components/UserSearch";
 import { UserSort } from "./components/UserSort";
 import { useUserFilters } from "./hooks/useUserFilters";
 import { useUsers } from "./hooks/useUsers";
-import { ArrowUp, CircleAlert, RefreshCw, UsersRound } from "lucide-react";
+import { ArrowUp, CircleAlert, RefreshCw, RotateCcw, UsersRound } from "lucide-react";
 import { UserGridSkeleton } from "./components/UserGridSkeleton";
 import { UserFiltersSkeleton } from "./components/UserFiltersSkeleton";
 import { SortDirection, SortField } from "./types/user.types";
@@ -38,8 +38,15 @@ export function UsersPage() {
   const isInitialError = isError && !hasData;
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  const { data: filterOptions, isLoading: isFilterOptionsLoading } =
-    useUserFilterOptions();
+  const {
+    data: filterOptions,
+    isLoading: isFilterOptionsLoading,
+    isError: isFilterOptionsError,
+    refetch: refetchFilterOptions,
+  } = useUserFilterOptions();
+
+  const hasSelectedFilters =
+    Boolean(filters.hobbies?.length) || Boolean(filters.nationalities?.length);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -80,6 +87,34 @@ export function UsersPage() {
                 }
               />
             )}
+            {isFilterOptionsLoading && (
+              <p role="status" className="self-center text-sm text-gray-500">
+                Loading filter options...
+              </p>
+            )}
+            {isFilterOptionsError && (
+              <div role="alert" className="self-center text-sm text-gray-700">
+                Unable to load filter options.
+                <button
+                  type="button"
+                  onClick={() => refetchFilterOptions()}
+                  className="ml-2 text-blue-600 underline"
+                >
+                  Retry
+                </button>
+              </div>
+            )}
+            {hasSelectedFilters && (
+              <button
+                type="button"
+                onClick={() => updateFilters({ hobbies: [], nationalities: [] })}
+                aria-label="Reset filters"
+                title="Reset filters"
+                className="self-center cursor-pointer rounded-md p-1.5 text-gray-500 transition hover:bg-gray-100 hover:text-lime-600"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </button>
+            )}
             <UserSort
               sort={filters.sort ?? SortField.FirstName}
               direction={filters.direction ?? SortDirection.Asc}
@@ -112,7 +147,7 @@ export function UsersPage() {
           ) : (
             <span className="text-3xl font-bold m-2">☰</span>
           )}
-          Filters
+          Top matching facets
         </button>
         <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
           <div className={`${showFilters ? "block" : "hidden"} lg:block`}>
@@ -122,18 +157,6 @@ export function UsersPage() {
               <UserFilters
                 hobbies={hobbies}
                 nationalities={nationalities}
-                selectedHobbies={filters.hobbies ?? []}
-                selectedNationalities={filters.nationalities ?? []}
-                onHobbyChange={(hobbies) => updateFilters({ hobbies })}
-                onNationalityChange={(nationalities) =>
-                  updateFilters({ nationalities })
-                }
-                onReset={() =>
-                  updateFilters({
-                    hobbies: [],
-                    nationalities: [],
-                  })
-                }
               />
             )}
           </div>

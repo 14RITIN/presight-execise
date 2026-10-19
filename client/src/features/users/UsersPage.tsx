@@ -13,7 +13,7 @@ import { useUserFilterOptions } from "./hooks/useUserFilterOptions";
 import { UserFilterSelects } from "./components/UserFilterSelects";
 
 export function UsersPage() {
-  const { filters, updateFilters } = useUserFilters();
+  const { filters, updateFilters, resetFilters, hasActiveFilters } = useUserFilters();
   const [showFilters, setShowFilters] = useState(false);
 
   const {
@@ -45,9 +45,6 @@ export function UsersPage() {
     refetch: refetchFilterOptions,
   } = useUserFilterOptions();
 
-  const hasSelectedFilters =
-    Boolean(filters.hobbies?.length) || Boolean(filters.nationalities?.length);
-
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 400);
@@ -68,8 +65,8 @@ export function UsersPage() {
         </h1>
 
         <div className="mb-6">
-          <div className="mb-6 flex flex-col gap-3 md:flex-row">
-            <div className="flex-1">
+          <div className="mb-6 flex flex-wrap items-center gap-3">
+            <div className="w-full min-w-0 sm:min-w-[220px] sm:flex-1">
               <UserSearch
                 value={filters.q ?? ""}
                 onChange={(q) => updateFilters({ q })}
@@ -104,23 +101,21 @@ export function UsersPage() {
                 </button>
               </div>
             )}
-            {hasSelectedFilters && (
-              <button
-                type="button"
-                onClick={() => updateFilters({ hobbies: [], nationalities: [] })}
-                aria-label="Reset filters"
-                title="Reset filters"
-                className="self-center cursor-pointer rounded-md p-1.5 text-gray-500 transition hover:bg-gray-100 hover:text-lime-600"
-              >
-                <RotateCcw className="h-4 w-4" />
-              </button>
-            )}
             <UserSort
               sort={filters.sort ?? SortField.FirstName}
               direction={filters.direction ?? SortDirection.Asc}
               onSortChange={(sort) => updateFilters({ sort })}
               onDirectionChange={(direction) => updateFilters({ direction })}
             />
+            <button
+              type="button"
+              onClick={resetFilters}
+              disabled={!hasActiveFilters}
+              className="flex h-11 shrink-0 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <RotateCcw className="h-4 w-4" aria-hidden="true" />
+              Reset Filters
+            </button>
           </div>
         </div>
 

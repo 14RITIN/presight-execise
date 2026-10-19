@@ -71,7 +71,27 @@ export const useUserFilters = () => {
     setSearchParams(params);
   };
 
+  const resetFilters = () => {
+    updateFilters({
+      q: "",
+      nationalities: [],
+      hobbies: [],
+      sort: DEFAULT_SORT,
+      direction: DEFAULT_DIRECTION,
+    });
+  };
+
+  const hasActiveFilters = Boolean(
+    filters.q ||
+    filters.nationalities?.length ||
+    filters.hobbies?.length ||
+    filters.sort !== DEFAULT_SORT ||
+    filters.direction !== DEFAULT_DIRECTION,
+  );
+
   return {
+    resetFilters,
+    hasActiveFilters,
     filters,
     updateFilters,
   };

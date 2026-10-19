@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 interface UserSearchProps {
   value: string;
@@ -6,7 +7,16 @@ interface UserSearchProps {
 }
 
 export function UserSearch({ value, onChange }: UserSearchProps) {
+  const { key: navigationKey } = useLocation();
   const [searchValue, setSearchValue] = useState(value);
+  const [previousNavigationKey, setPreviousNavigationKey] = useState(navigationKey);
+
+  // Discard pending input on reset or history navigation, even if q is unchanged.
+  // This is only the existing debounce draft; committed filters live in the URL.
+  if (previousNavigationKey !== navigationKey) {
+    setPreviousNavigationKey(navigationKey);
+    setSearchValue(value);
+  }
 
   useEffect(() => {
     if (searchValue === value) {

@@ -5,6 +5,7 @@ import { UserCard } from './UserCard';
 
 interface UserGridProps {
   users: User[];
+  selectedHobbies: string[];
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
   onLoadMore: () => void;
@@ -12,6 +13,7 @@ interface UserGridProps {
 
 export function UserGrid({
   users,
+  selectedHobbies,
   hasNextPage,
   isFetchingNextPage,
   onLoadMore,
@@ -28,7 +30,7 @@ export function UserGrid({
       onLoadMore();
     }
   }}
-  itemContent={(_, user) => <UserCard user={user} />}
+  itemContent={(_, user) => <UserCard user={user} selectedHobbies={selectedHobbies} />}
 />
   );
 }

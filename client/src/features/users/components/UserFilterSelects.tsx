@@ -47,12 +47,16 @@ export function UserFilterSelects({
       <Select
         className="w-full shrink-0 sm:w-[250px]"
         isMulti
+        controlShouldRenderValue={false}
+        backspaceRemovesValue={false}
         isSearchable
         aria-label="Nationalities (match any selected)"
         options={nationalityOptions}
         value={selectedNationalities.map((value) => ({ label: value, value }))}
         onChange={(values) => handleChange(values, onNationalitiesChange)}
-        placeholder="Select nationalities..."
+        placeholder={selectedNationalities.length
+          ? `Nationalities (${selectedNationalities.length} selected)`
+          : "Select nationalities..."}
         closeMenuOnSelect={false}
         styles={selectStyles}
       />
@@ -60,12 +64,16 @@ export function UserFilterSelects({
       <Select
         className="w-full shrink-0 sm:w-[250px]"
         isMulti
+        controlShouldRenderValue={false}
+        backspaceRemovesValue={false}
         isSearchable
         aria-label="Hobbies (match all selected)"
         options={hobbyOptions}
         value={selectedHobbies.map((value) => ({ label: value, value }))}
         onChange={(values) => handleChange(values, onHobbiesChange)}
-        placeholder="Select hobbies..."
+        placeholder={selectedHobbies.length
+          ? `Hobbies (${selectedHobbies.length} selected)`
+          : "Select hobbies..."}
         closeMenuOnSelect={false}
         styles={selectStyles}
       />

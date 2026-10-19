@@ -5,7 +5,7 @@ import { UserSearch } from "./components/UserSearch";
 import { UserSort } from "./components/UserSort";
 import { useUserFilters } from "./hooks/useUserFilters";
 import { useUsers } from "./hooks/useUsers";
-import { ArrowUp, CircleAlert, RefreshCw, RotateCcw, UsersRound } from "lucide-react";
+import { ArrowUp, CircleAlert, RefreshCw, RotateCcw, UsersRound, X } from "lucide-react";
 import { UserGridSkeleton } from "./components/UserGridSkeleton";
 import { UserFiltersSkeleton } from "./components/UserFiltersSkeleton";
 import { SortDirection, SortField } from "./types/user.types";
@@ -117,6 +117,46 @@ export function UsersPage() {
               Reset Filters
             </button>
           </div>
+          {(Boolean(filters.nationalities?.length) || Boolean(filters.hobbies?.length)) && (
+            <section aria-labelledby="selected-filters-heading" className="space-y-3">
+              <h2 id="selected-filters-heading" className="text-sm font-semibold text-gray-900">
+                Selected filters
+              </h2>
+              {([
+                { field: "nationalities", label: "Nationalities", singular: "nationality" },
+                { field: "hobbies", label: "Hobbies", singular: "hobby" },
+              ] as const).map(({ field, label, singular }) => {
+                const values = filters[field] ?? [];
+                if (values.length === 0) return null;
+
+                return (
+                  <div key={field} className="space-y-2">
+                    <h3 className="text-xs font-medium text-gray-600">{label}</h3>
+                    <ul className="flex flex-wrap gap-2">
+                      {values.map((value) => (
+                        <li
+                          key={value}
+                          className="flex max-w-full items-center gap-1 rounded-lg bg-blue-50 py-1 pl-3 pr-1 text-sm text-blue-700"
+                        >
+                          <span className="min-w-0 break-words">{value}</span>
+                          <button
+                            type="button"
+                            aria-label={`Remove ${singular}: ${value}`}
+                            onClick={() => updateFilters({
+                              [field]: values.filter((selected) => selected !== value),
+                            })}
+                            className="shrink-0 rounded-md p-1.5 hover:bg-blue-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                          >
+                            <X className="h-3.5 w-3.5" aria-hidden="true" />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+            </section>
+          )}
         </div>
 
         <div className="sticky top-0 z-20 mb-4 border-b border-gray-200 bg-gray-50/95 py-3 backdrop-blur">
@@ -190,6 +230,7 @@ export function UsersPage() {
               <>
                 <UserGrid
                   users={users}
+                  selectedHobbies={filters.hobbies ?? []}
                   hasNextPage={Boolean(hasNextPage)}
                   isFetchingNextPage={isFetchingNextPage}
                   onLoadMore={() => {

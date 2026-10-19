@@ -3,13 +3,18 @@ import { User } from "../types/user.types";
 
 interface UserCardProps {
   user: User;
+  selectedHobbies: string[];
 }
 
-export function UserCard({ user }: UserCardProps) {
+export function UserCard({ user, selectedHobbies }: UserCardProps) {
   const [avatarError, setAvatarError] = useState(false);
 
-  const visibleHobbies = user.hobbies.slice(0, 2);
-  const remainingHobbies = user.hobbies.slice(2);
+  const orderedHobbies = [
+    ...user.hobbies.filter((hobby) => selectedHobbies.includes(hobby)),
+    ...user.hobbies.filter((hobby) => !selectedHobbies.includes(hobby)),
+  ];
+  const visibleHobbies = orderedHobbies.slice(0, 2);
+  const remainingHobbies = orderedHobbies.slice(2);
   const initials =  `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
 
   return (

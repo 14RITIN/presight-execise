@@ -13,10 +13,15 @@ export const errorHandler = (
   error: unknown,
   _req: Request,
   res: Response,
-  _next: NextFunction,
+  next: NextFunction,
 ): void => {
-  void _next;
   console.error(error);
+
+  // Express must finish handling errors after a response has already started.
+  if (res.headersSent) {
+    next(error);
+    return;
+  }
 
   res.status(500).json({
     error: {

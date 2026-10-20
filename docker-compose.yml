@@ -10,6 +10,9 @@ services:
     volumes:
       - sqlite_data:/app/data
 
+    environment:
+      REDIS_URL: redis://redis:6379
+
     healthcheck:
       test:
         - CMD
@@ -35,6 +38,10 @@ services:
       server:
         condition: service_healthy
 
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
     restart: unless-stopped
 
 volumes:

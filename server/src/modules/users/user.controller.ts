@@ -24,10 +24,10 @@ export const getUsers = (req: Request, res: Response): void => {
 };
 
 
-export const getUserFilterOptions = (
+export const getUserFilterOptions = async (
   _req: Request,
   res: Response,
-): void => {
-  const options = getUserFilterOptionsService();
+): Promise<void> => {
+  const options = await getUserFilterOptionsService();
   res.status(200).json(options);
 };

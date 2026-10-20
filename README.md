@@ -161,6 +161,37 @@ failures; look for an accompanying `[error]` entry with the method, path, error
 type, and stack frames. Query strings, headers, request bodies, and raw error
 messages are omitted to avoid logging sensitive request data.
 
+### Filter-options cache
+
+Docker includes Redis (`redis:7-alpine`) on its internal network. Only
+`GET /api/users/filter-options` is cached under `users:filter-options` for
+300 seconds. A miss reads SQLite and populates Redis; a hit returns the cached
+options. Redis failures log a fallback and return SQLite results instead.
+Search, pagination, and contextual facets are never cached.
+
+The backend reads `REDIS_URL` from the environment. Compose sets it to
+`redis://redis:6379`; without it, local development uses SQLite directly.
+Options can be stale for up to five minutes after database changes.
+
+After `docker compose up --build -d`, test from a terminal (avoiding the browser's
+separate TanStack Query cache):
+
+```sh
+docker compose exec redis redis-cli DEL users:filter-options
+curl http://localhost:4000/api/users/filter-options
+curl http://localhost:4000/api/users/filter-options
+docker compose logs server
+docker compose exec redis redis-cli TTL users:filter-options
+docker compose stop redis
+curl http://localhost:4000/api/users/filter-options
+docker compose logs server
+docker compose start redis
+```
+
+The first two requests log `miss` then `hit`. With Redis stopped, the endpoint
+still returns HTTP 200 using SQLite and logs a fallback. After Redis restarts,
+the backend reconnects automatically (allow a few seconds).
+
 ## Deliverables
 
 * React client source code in `client/`

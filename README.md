@@ -136,6 +136,22 @@ docker compose down -v
 docker compose up --build
 
 
+### Container troubleshooting
+
+The backend healthcheck calls `/api/health` every 30 seconds using Node.js.
+The frontend starts after the backend becomes healthy. This checks HTTP health,
+not database readiness; an unhealthy status alone does not restart a container.
+
+| Command | Useful for |
+| --- | --- |
+| `docker compose ps` | Show container names, ports, and backend health status. |
+| `docker compose logs server` | Review backend startup and error logs. |
+| `docker compose logs -f server` | Follow backend logs live; Ctrl+C stops following. |
+| `docker compose restart server` | Restart the backend after troubleshooting; does not rebuild its image. |
+| `docker inspect <container>` | Inspect container configuration and healthcheck results under `State.Health`; use a name from `docker compose ps`. |
+| `docker compose down` | Stop and remove the stack while keeping the SQLite named volume. |
+| `docker compose down -v` | Remove the stack and its named volume, deleting the stored SQLite data. Use only when intentionally resetting the database. |
+
 ## Deliverables
 
 * React client source code in `client/`

@@ -10,6 +10,17 @@ services:
     volumes:
       - sqlite_data:/app/data
 
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:4000/api/health').then(async response => { if (!response.ok || (await response.json()).status !== 'ok') process.exit(1); }).catch(() => process.exit(1));"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
     restart: unless-stopped
 
   client:
@@ -21,7 +32,8 @@ services:
       - "8080:80"
 
     depends_on:
-      - server
+      server:
+        condition: service_healthy
 
     restart: unless-stopped
 

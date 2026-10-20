@@ -2,6 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 
 import { apiRateLimiter } from './middleware/rate-limit.middleware';
+import { requestLogger } from './middleware/request-logging.middleware';
 import {
   errorHandler,
   notFoundHandler,
@@ -12,6 +13,8 @@ export function createApp() {
   const app = express();
 
   app.disable('x-powered-by');
+
+  app.use('/api', requestLogger);
 
   app.use(helmet());
 

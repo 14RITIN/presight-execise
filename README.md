@@ -152,6 +152,15 @@ not database readiness; an unhealthy status alone does not restart a container.
 | `docker compose down` | Stop and remove the stack while keeping the SQLite named volume. |
 | `docker compose down -v` | Remove the stack and its named volume, deleting the stored SQLite data. Use only when intentionally resetting the database. |
 
+Backend request logs use `METHOD PATH STATUS DURATION`, for example
+`GET /api/users 200 42ms`. View them with `docker compose logs server`, or
+follow new requests live with `docker compose logs -f server`.
+Responses with **4xx** status codes indicate client-side problems such as invalid
+queries, unknown routes, or rate limits. **5xx** responses indicate server-side
+failures; look for an accompanying `[error]` entry with the method, path, error
+type, and stack frames. Query strings, headers, request bodies, and raw error
+messages are omitted to avoid logging sensitive request data.
+
 ## Deliverables
 
 * React client source code in `client/`
